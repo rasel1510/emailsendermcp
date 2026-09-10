@@ -12,50 +12,55 @@ export default function PwaInstallModal() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
-    // Check if already in standalone PWA mode
-    const isStandalone =
+    // Register Service Worker for full PWA criteria
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .catch((err) => console.log("SW register error:", err));
+    }
+
+    // Check if already running as installed app
+    const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone === true;
 
-    if (isStandalone) {
-      return; // Already installed, no need to show
+    setIsStandalone(standalone);
+
+    if (standalone) {
+      return; // Already installed, do not show
     }
 
-    // Check if dismissed recently (sessionStorage)
-    const dismissed = sessionStorage.getItem("pwa_modal_dismissed");
-    if (dismissed) {
-      return;
-    }
-
-    // Detect iOS device (Safari doesn't support beforeinstallprompt)
+    // Detect iOS
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
     setIsIOS(isIosDevice);
 
-    if (isIosDevice) {
-      // Show iOS instruction modal after a short delay
+    // Listen for native Android/Chrome beforeinstallprompt
+    const promptHandler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    };
+
+    window.addEventListener("beforeinstallprompt", promptHandler);
+
+    // Always show modal after 1.5s delay if not already dismissed in this session
+    const dismissed = sessionStorage.getItem("pwa_modal_dismissed");
+    if (!dismissed) {
       const timer = setTimeout(() => {
         setShowModal(true);
       }, 1500);
-      return () => clearTimeout(timer);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("beforeinstallprompt", promptHandler);
+      };
     }
 
-    // Android / Chromium beforeinstallprompt handler
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Wait 1.5s for page to settle then show modal
-      setTimeout(() => {
-        setShowModal(true);
-      }, 1500);
-    };
-
-    window.addEventListener("beforeinstallprompt", handler);
-
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("beforeinstallprompt", promptHandler);
     };
   }, []);
 
@@ -67,10 +72,9 @@ export default function PwaInstallModal() {
         setShowModal(false);
       }
       setDeferredPrompt(null);
-    } else if (isIOS) {
-      // For iOS, user manually adds via share button
-      setShowModal(false);
     } else {
+      // If browser doesn't support direct programmatic prompt (e.g. Firefox, Safari desktop),
+      // we notify user or close
       setShowModal(false);
     }
   }
@@ -78,6 +82,10 @@ export default function PwaInstallModal() {
   function handleDismiss() {
     setShowModal(false);
     sessionStorage.setItem("pwa_modal_dismissed", "true");
+  }
+
+  if (isStandalone) {
+    return null;
   }
 
   return (
@@ -92,24 +100,24 @@ export default function PwaInstallModal() {
             alignItems: "center",
             justifyContent: "center",
             padding: "20px",
-            background: "rgba(5, 5, 16, 0.75)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: "rgba(5, 5, 16, 0.8)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
           }}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.85, y: 25 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+            exit={{ opacity: 0, scale: 0.85, y: 25 }}
+            transition={{ type: "spring", duration: 0.45, bounce: 0.25 }}
             style={{
               width: "100%",
               maxWidth: "420px",
-              background: "rgba(20, 16, 48, 0.95)",
+              background: "rgba(20, 16, 48, 0.96)",
               border: "1px solid rgba(167, 139, 250, 0.35)",
               borderRadius: "24px",
-              padding: "28px 24px",
-              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(124, 58, 237, 0.2)",
+              padding: "32px 24px",
+              boxShadow: "0 24px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(124, 58, 237, 0.25)",
               textAlign: "center",
               position: "relative",
             }}
@@ -117,16 +125,16 @@ export default function PwaInstallModal() {
             {/* App Icon */}
             <div
               style={{
-                width: "64px",
-                height: "64px",
-                margin: "0 auto 16px",
-                borderRadius: "18px",
+                width: "68px",
+                height: "68px",
+                margin: "0 auto 18px",
+                borderRadius: "20px",
                 background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
                 padding: "2px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(124, 58, 237, 0.4)",
+                boxShadow: "0 8px 28px rgba(124, 58, 237, 0.45)",
               }}
             >
               <div
@@ -134,13 +142,13 @@ export default function PwaInstallModal() {
                   width: "100%",
                   height: "100%",
                   background: "#0d0a21",
-                  borderRadius: "16px",
+                  borderRadius: "18px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
@@ -150,7 +158,7 @@ export default function PwaInstallModal() {
             {/* Title */}
             <h3
               style={{
-                fontSize: "20px",
+                fontSize: "22px",
                 fontWeight: 800,
                 color: "#ffffff",
                 marginBottom: "8px",
@@ -168,11 +176,11 @@ export default function PwaInstallModal() {
                 marginBottom: "20px",
               }}
             >
-              Install this app on your phone or desktop for instant access, offline readiness, and a seamless native experience!
+              Install this app on your phone or PC for instant access, native performance, and a full-screen experience!
             </p>
 
-            {/* iOS Instructions or One-Click Android Button */}
-            {isIOS ? (
+            {/* iOS Instructions */}
+            {isIOS && (
               <div
                 style={{
                   background: "rgba(255, 255, 255, 0.05)",
@@ -209,14 +217,21 @@ export default function PwaInstallModal() {
                 </p>
                 <p>2. Scroll down &amp; tap <strong>&quot;Add to Home Screen&quot;</strong>.</p>
               </div>
-            ) : null}
+            )}
+
+            {/* Desktop browser hint if no beforeinstallprompt */}
+            {!isIOS && !deferredPrompt && (
+              <p style={{ fontSize: "12px", color: "#94a3b8", marginBottom: "16px" }}>
+                💡 If on Chrome/Edge desktop, you can also click the install icon (➕) in your browser address bar.
+              </p>
+            )}
 
             {/* Buttons */}
             <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
               <button
                 onClick={handleDismiss}
                 className="btn-secondary"
-                style={{ flex: 1, padding: "12px", fontSize: "14px" }}
+                style={{ flex: 1, padding: "13px", fontSize: "14px", fontWeight: 600 }}
                 type="button"
               >
                 Not Now
@@ -225,7 +240,7 @@ export default function PwaInstallModal() {
               <button
                 onClick={handleInstallClick}
                 className="btn-primary"
-                style={{ flex: 1, padding: "12px", fontSize: "14px" }}
+                style={{ flex: 1, padding: "13px", fontSize: "14px", fontWeight: 700 }}
                 type="button"
               >
                 {isIOS ? "Got It!" : "Install App"}
