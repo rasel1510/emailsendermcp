@@ -1,9 +1,4 @@
-#!/usr/bin/env node
-/**
- * Official Model Context Protocol (MCP) Server for Email Sending & AI Drafting
- * Standard: JSON-RPC 2.0 over stdio
- * Compatible with: Claude Desktop, Cursor, Antigravity, VSCode MCP, Roo Code, etc.
- */
+
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -30,7 +25,7 @@ try {
       }
     }
   }
-} catch (_) {}
+} catch (_) { }
 
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com";
 const SMTP_PORT = Number(process.env.SMTP_PORT) || 587;
