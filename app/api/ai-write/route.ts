@@ -5,14 +5,14 @@ const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
 
 interface AiWriteRequest {
   purpose: string;
-  tone: string;
-  recipient: string;
+  tone?: string;
+  recipient?: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as AiWriteRequest;
-    const { purpose, tone, recipient } = body;
+    const { purpose, tone = "professional", recipient } = body;
 
     if (!purpose?.trim()) {
       return Response.json({ error: "Purpose is required" }, { status: 400 });

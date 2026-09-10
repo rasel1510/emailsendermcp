@@ -8,18 +8,8 @@ interface AiWriterProps {
   onGenerated: (subject: string, body: string) => void;
 }
 
-const TONES = [
-  { value: "professional", label: "💼 Professional" },
-  { value: "friendly", label: "😊 Friendly" },
-  { value: "formal", label: "🎩 Formal" },
-  { value: "casual", label: "✌️ Casual" },
-] as const;
-
-type Tone = (typeof TONES)[number]["value"];
-
 export default function AiWriter({ recipientEmail, onGenerated }: AiWriterProps) {
   const [purpose, setPurpose] = useState("");
-  const [tone, setTone] = useState<Tone>("professional");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [generated, setGenerated] = useState<{ subject: string; body: string } | null>(null);
@@ -46,7 +36,7 @@ export default function AiWriter({ recipientEmail, onGenerated }: AiWriterProps)
       const res = await fetch("/api/ai-write", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ purpose, tone, recipient: recipientEmail }),
+        body: JSON.stringify({ purpose, recipient: recipientEmail }),
       });
 
       const data = await res.json();
@@ -101,26 +91,6 @@ export default function AiWriter({ recipientEmail, onGenerated }: AiWriterProps)
           style={{ resize: "none" }}
         />
         <div className="char-count">{purpose.length} chars</div>
-      </div>
-
-      {/* Tone */}
-      <div>
-        <label className="label">Tone</label>
-        <div className="tone-grid">
-          {TONES.map((t) => (
-            <motion.button
-              key={t.value}
-              id={`tone-${t.value}`}
-              className={`tone-btn ${tone === t.value ? "selected" : ""}`}
-              onClick={() => setTone(t.value)}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              type="button"
-            >
-              {t.label}
-            </motion.button>
-          ))}
-        </div>
       </div>
 
       {/* Generate Button */}
