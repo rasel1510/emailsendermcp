@@ -205,23 +205,8 @@ export default function PwaInstallModal() {
                 <h4 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", margin: 0, lineHeight: 1.2 }}>
                   Install App
                 </h4>
-                <p style={{ fontSize: "12px", color: "#94a3b8", margin: "3px 0 0 0" }}>
-                  EmailSender MCP · Fast &amp; Offline
-                </p>
               </div>
             </div>
-
-            {/* Description */}
-            <p
-              style={{
-                fontSize: "13px",
-                color: "#cbd5e1",
-                lineHeight: 1.5,
-                margin: "0 0 14px 0",
-              }}
-            >
-              Add to your device for instant launch and a full-screen native experience!
-            </p>
 
             {/* iOS Instructions */}
             {isIOS && (
