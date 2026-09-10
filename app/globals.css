@@ -495,10 +495,68 @@ body {
 }
 
 /* ──────────────────────────────────────────────
-   Responsive
+   Responsive & PWA Touch Optimizations
 ────────────────────────────────────────────── */
+.main-container {
+  padding: 40px 20px;
+}
+
+.glass-card {
+  padding: 40px;
+}
+
 @media (max-width: 640px) {
+  .main-container {
+    padding: 24px 12px;
+  }
+
+  .glass-card {
+    padding: 24px 16px;
+    border-radius: 20px;
+  }
+
   .tone-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .btn-primary {
+    padding: 14px 20px;
+    font-size: 15px;
+    width: 100%;
+  }
+
+  .mode-btn {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .glow-input {
+    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    padding: 12px 14px;
+  }
+
+  .blob-1 {
+    width: 320px;
+    height: 320px;
+  }
+
+  .blob-2 {
+    width: 280px;
+    height: 280px;
+  }
+
+  .blob-3, .blob-4 {
+    display: none; /* Reduce GPU overhead on mobile */
+  }
+}
+
+/* Safe area insets for notches & home bars on mobile */
+@supports (padding: max(0px)) {
+  body {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
   }
 }

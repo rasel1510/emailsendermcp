@@ -12,6 +12,7 @@ const LiquidBackground = dynamic(() => import("@/components/LiquidBackground"), 
 export default function HomePage() {
   return (
     <main
+      className="main-container"
       style={{
         position: "relative",
         minHeight: "100vh",
@@ -19,7 +20,6 @@ export default function HomePage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px 20px",
         zIndex: 1,
       }}
     >

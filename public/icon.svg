@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0c24"/>
+      <stop offset="100%" stop-color="#050510"/>
+    </linearGradient>
+    <linearGradient id="mailGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <rect x="76" y="116" width="360" height="280" rx="36" fill="none" stroke="url(#mailGrad)" stroke-width="28"/>
+  <path d="M96 146 L256 296 L416 146" fill="none" stroke="url(#mailGrad)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="396" cy="116" r="28" fill="#22d3ee"/>
+</svg>

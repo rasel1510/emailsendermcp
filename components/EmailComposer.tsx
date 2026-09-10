@@ -104,7 +104,6 @@ export default function EmailComposer() {
         width: "100%",
         maxWidth: "680px",
         margin: "0 auto",
-        padding: "40px",
       }}
       variants={containerVariants}
       initial="hidden"
