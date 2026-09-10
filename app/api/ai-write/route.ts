@@ -1,0 +1,111 @@
+import { NextRequest } from "next/server";
+
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!;
+const OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
+
+interface AiWriteRequest {
+  purpose: string;
+  tone: string;
+  recipient: string;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = (await request.json()) as AiWriteRequest;
+    const { purpose, tone, recipient } = body;
+
+    if (!purpose?.trim()) {
+      return Response.json({ error: "Purpose is required" }, { status: 400 });
+    }
+
+    if (!OPENROUTER_API_KEY) {
+      return Response.json({ error: "OpenRouter API key not configured" }, { status: 500 });
+    }
+
+    const systemPrompt = `You are an expert email copywriter. Generate professional, high-quality emails based on the user's requirements.
+Always respond with a valid JSON object in this exact format:
+{
+  "subject": "<concise, compelling subject line>",
+  "body": "<full email body with proper greeting, content, and signature placeholder>"
+}
+Do NOT wrap in markdown code blocks. Return raw JSON only.`;
+
+    const userPrompt = `Write a ${tone} email with the following purpose:
+${purpose}
+
+${recipient ? `Recipient email: ${recipient}` : ""}
+
+Requirements:
+- Tone: ${tone}
+- Keep it concise but complete
+- Include a proper greeting, body paragraphs, and closing
+- End with "[Your Name]" as signature placeholder
+- Subject should be engaging and relevant`;
+
+    const res = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://emailsendermcp.app",
+        "X-Title": "EmailSender MCP",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash-001",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 1024,
+      }),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      console.error("OpenRouter error:", errData);
+      return Response.json(
+        { error: errData?.error?.message || `OpenRouter API error: ${res.status}` },
+        { status: res.status }
+      );
+    }
+
+    const data = await res.json();
+    const rawContent = data.choices?.[0]?.message?.content ?? "";
+
+    // Strip possible markdown fences
+    const jsonStr = rawContent
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/```\s*$/i, "")
+      .trim();
+
+    let parsed: { subject: string; body: string };
+    try {
+      parsed = JSON.parse(jsonStr);
+    } catch {
+      // Fallback: try to extract subject/body via regex
+      const subjectMatch = rawContent.match(/"subject"\s*:\s*"([^"]+)"/);
+      const bodyMatch = rawContent.match(/"body"\s*:\s*"([\s\S]+?)(?:"\s*}|",)/);
+      if (subjectMatch && bodyMatch) {
+        parsed = {
+          subject: subjectMatch[1],
+          body: bodyMatch[1].replace(/\\n/g, "\n"),
+        };
+      } else {
+        return Response.json(
+          { error: "AI returned an unexpected format. Please try again." },
+          { status: 500 }
+        );
+      }
+    }
+
+    return Response.json({ subject: parsed.subject, body: parsed.body });
+  } catch (err: unknown) {
+    console.error("ai-write error:", err);
+    return Response.json(
+      { error: err instanceof Error ? err.message : "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
