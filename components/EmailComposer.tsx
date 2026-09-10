@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AiWriter from "./AiWriter";
 import ManualWriter from "./ManualWriter";
-import SenderSettings, { type SenderConfig } from "./SenderSettings";
 
 type Mode = "ai" | "manual";
 type SendStatus = "idle" | "sending" | "success" | "error";
@@ -38,12 +37,6 @@ export default function EmailComposer() {
   const [emailError, setEmailError] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [senderConfig, setSenderConfig] = useState<SenderConfig>({
-    senderEmail: "",
-    senderPass: "",
-    smtpHost: "smtp.gmail.com",
-    smtpPort: 587,
-  });
   const [sendStatus, setSendStatus] = useState<SendStatus>("idle");
   const [sendMessage, setSendMessage] = useState("");
 
@@ -82,10 +75,6 @@ export default function EmailComposer() {
           to: recipientEmail,
           subject,
           body,
-          senderEmail: senderConfig.senderEmail,
-          senderPass: senderConfig.senderPass,
-          smtpHost: senderConfig.smtpHost,
-          smtpPort: senderConfig.smtpPort,
         }),
       });
 
@@ -266,14 +255,7 @@ export default function EmailComposer() {
         </AnimatePresence>
       </motion.div>
 
-      <motion.div variants={childVariants}>
-        <div className="divider" style={{ marginBottom: "24px" }} />
-      </motion.div>
 
-      {/* Sender Settings */}
-      <motion.div variants={childVariants} style={{ marginBottom: "24px" }}>
-        <SenderSettings onSettingsChange={setSenderConfig} />
-      </motion.div>
 
       {/* Send Button */}
       <motion.div variants={childVariants}>
