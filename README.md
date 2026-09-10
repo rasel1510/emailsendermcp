@@ -7,11 +7,15 @@ An industry-grade, AI-powered email sender built with **Next.js 16**, **Framer M
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-purple?logo=framer)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-AI-orange)
 
+> **Powered by OpenRouter AI · Gemini 2.0 Flash**
+> 
+> Intelligent, contextual email generation with fine-tuned tone selection and one-click drafting.
+
 ---
 
 ## ✨ Features
 
-- 🤖 **AI Write Mode** — Describe your email purpose + pick a tone, AI generates a complete subject & body (powered by **Gemini 2.0 Flash** via OpenRouter)
+- 🤖 **AI Write Mode** — Describe your email purpose + pick a tone, AI generates a complete subject & body (Powered by OpenRouter AI · Gemini 2.0 Flash)
 - ✏️ **Manual Write Mode** — Write emails by hand with quick template shortcuts
 - 🎨 **Liquid Glass UI** — Animated morphing blobs, glassmorphism card, grid overlay
 - ⚡ **Framer Motion** — Spring-animated mode toggle, staggered entrance, smooth transitions

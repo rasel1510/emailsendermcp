@@ -42,37 +42,6 @@ export default function HomePage() {
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: "680px" }}>
-        {/* Top badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "24px",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "6px 16px",
-              background: "rgba(124,58,237,0.12)",
-              border: "1px solid rgba(124,58,237,0.3)",
-              borderRadius: "99px",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#a78bfa",
-              letterSpacing: "0.05em",
-            }}
-          >
-            <div className="pulse-dot" style={{ background: "#a78bfa" }} />
-            Powered by OpenRouter AI · Gemini 2.0 Flash
-          </div>
-        </motion.div>
-
         {/* Main Composer Card */}
         <EmailComposer />
 
