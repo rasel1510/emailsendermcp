@@ -13,15 +13,51 @@ An industry-grade, AI-powered email sender built with **Next.js 16**, **Framer M
 
 ---
 
-## ✨ Features
+## 🔌 Official Model Context Protocol (MCP) Server
 
-- 🤖 **AI Write Mode** — Describe your email purpose + pick a tone, AI generates a complete subject & body (Powered by OpenRouter AI · Gemini 2.0 Flash)
-- ✏️ **Manual Write Mode** — Write emails by hand with quick template shortcuts
-- 🎨 **Liquid Glass UI** — Animated morphing blobs, glassmorphism card, grid overlay
-- ⚡ **Framer Motion** — Spring-animated mode toggle, staggered entrance, smooth transitions
-- 📬 **Real Email Sending** — Nodemailer + any SMTP provider (Gmail, Outlook, etc.)
-- ✅ **Input Validation** — Email regex, required fields, descriptive error messages
-- 🔒 **Secure** — SMTP credentials stored only in `.env.local` (never in source code)
+This project includes a fully compliant **Model Context Protocol (MCP) server** (`mcp-server.mjs`) built with `@modelcontextprotocol/sdk` over standard `stdio`. 
+
+It enables LLMs in **Claude Desktop, Cursor, Antigravity, Roo Code, VS Code**, etc., to draft and send real emails directly from chat without any UI buttons!
+
+### MCP Tools Provided:
+1. **`send_email`**:
+   - `to`: Recipient email address
+   - `subject`: Email subject
+   - `body`: Plain-text or HTML message content
+2. **`draft_email`**:
+   - `purpose`: What the email is about
+   - `tone`: `professional` | `friendly` | `formal` | `casual`
+   - `recipient`: Optional recipient name/email for context
+
+### How to Connect in Claude Desktop / Cursor:
+
+Add to your `claude_desktop_config.json` or Cursor MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "emailsender": {
+      "command": "node",
+      "args": ["c:/Users/DELL/Desktop/emailsendermcp/mcp-server.mjs"],
+      "env": {
+        "OPENROUTER_API_KEY": "your_openrouter_api_key",
+        "SMTP_USER": "your_email@gmail.com",
+        "SMTP_PASS": "your_app_password"
+      }
+    }
+  }
+}
+```
+
+Now in Claude / Cursor, simply chat:
+> *"Send a professional meeting confirmation to client@example.com for tomorrow at 3 PM."*
+The AI will call the MCP tool directly in the conversation!
+
+---
+
+## ✨ Web App UI
+
+In addition to the headless MCP server, this repo provides a modern Web & Mobile PWA interface with liquid glassmorphism.
 
 ---
 
