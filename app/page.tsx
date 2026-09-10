@@ -4,8 +4,12 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import EmailComposer from "@/components/EmailComposer";
 
-// Dynamically import LiquidBackground to avoid SSR issues with Framer Motion
+// Dynamically import LiquidBackground and PwaInstallModal to avoid SSR issues
 const LiquidBackground = dynamic(() => import("@/components/LiquidBackground"), {
+  ssr: false,
+});
+
+const PwaInstallModal = dynamic(() => import("@/components/PwaInstallModal"), {
   ssr: false,
 });
 
@@ -23,6 +27,8 @@ export default function HomePage() {
         zIndex: 1,
       }}
     >
+      {/* PWA Prompt Modal */}
+      <PwaInstallModal />
       {/* Animated liquid background */}
       <LiquidBackground />
 
