@@ -71,12 +71,6 @@ export default function EmailComposer() {
       setSendStatus("error");
       return;
     }
-    if (!senderConfig.senderEmail || !senderConfig.senderPass) {
-      setSendMessage("Please configure your sender SMTP settings first.");
-      setSendStatus("error");
-      return;
-    }
-
     setSendStatus("sending");
     setSendMessage("");
 
