@@ -4,19 +4,21 @@
    Design Tokens
 ────────────────────────────────────────────── */
 :root {
-  --bg-base: #050510;
-  --bg-surface: rgba(13, 12, 34, 0.7);
-  --bg-card: rgba(18, 16, 48, 0.6);
-  --border-subtle: rgba(124, 58, 237, 0.2);
-  --border-glow: rgba(124, 58, 237, 0.5);
-  --accent-violet: #7c3aed;
-  --accent-cyan: #06b6d4;
-  --accent-pink: #ec4899;
-  --text-primary: #f1f0ff;
-  --text-secondary: #a09fc0;
-  --text-muted: #5e5c8a;
-  --success: #10b981;
-  --error: #ef4444;
+  --bg-base: #070714;
+  --bg-surface: rgba(18, 16, 42, 0.85);
+  --bg-card: rgba(22, 19, 52, 0.78);
+  --border-subtle: rgba(147, 90, 255, 0.28);
+  --border-glow: rgba(147, 90, 255, 0.65);
+  --accent-violet: #8b5cf6;
+  --accent-cyan: #22d3ee;
+  --accent-pink: #f472b6;
+  /* High contrast typography tokens (WCAG AAA compliant on dark glass) */
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #cbd5e1;
+  --text-placeholder: #94a3b8;
+  --success: #34d399;
+  --error: #f87171;
   --font-sans: var(--font-inter);
 }
 
@@ -164,12 +166,13 @@ body {
 ────────────────────────────────────────────── */
 .glow-input {
   width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(124,58,237,0.25);
+  background: rgba(15, 12, 36, 0.7);
+  border: 1px solid rgba(147, 90, 255, 0.35);
   border-radius: 12px;
   padding: 14px 18px;
-  color: var(--text-primary);
+  color: #ffffff;
   font-size: 15px;
+  font-weight: 400;
   font-family: inherit;
   transition: all 0.25s ease;
   outline: none;
@@ -177,15 +180,16 @@ body {
 }
 
 .glow-input::placeholder {
-  color: var(--text-muted);
+  color: var(--text-placeholder);
+  opacity: 0.9;
 }
 
 .glow-input:focus {
-  border-color: rgba(124,58,237,0.7);
-  background: rgba(124,58,237,0.06);
+  border-color: rgba(167, 139, 250, 0.85);
+  background: rgba(22, 17, 50, 0.85);
   box-shadow:
-    0 0 0 3px rgba(124,58,237,0.12),
-    0 0 20px rgba(124,58,237,0.08);
+    0 0 0 3px rgba(139, 92, 246, 0.22),
+    0 0 24px rgba(139, 92, 246, 0.16);
 }
 
 /* ──────────────────────────────────────────────
@@ -206,27 +210,28 @@ body {
   font-family: inherit;
   letter-spacing: 0.02em;
   overflow: hidden;
-  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #06b6d4 100%);
-  color: white;
+  background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #0891b2 100%);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   transition: all 0.3s ease;
   box-shadow:
-    0 4px 24px rgba(124,58,237,0.4),
-    0 1px 0 rgba(255,255,255,0.12) inset;
+    0 4px 24px rgba(124, 58, 237, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
 .btn-primary::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
   transition: opacity 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 40px rgba(124,58,237,0.55),
-    0 1px 0 rgba(255,255,255,0.15) inset;
+    0 8px 40px rgba(124, 58, 237, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.25) inset;
 }
 
 .btn-primary:active {
@@ -234,7 +239,7 @@ body {
 }
 
 .btn-primary:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
   transform: none;
 }
@@ -248,21 +253,21 @@ body {
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  border: 1px solid rgba(124,58,237,0.4);
+  border: 1px solid rgba(167, 139, 250, 0.35);
   border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
-  color: var(--text-secondary);
-  background: rgba(124,58,237,0.08);
+  color: #f1f5f9;
+  background: rgba(139, 92, 246, 0.12);
   transition: all 0.25s ease;
 }
 
 .btn-secondary:hover {
-  border-color: rgba(124,58,237,0.7);
-  color: var(--text-primary);
-  background: rgba(124,58,237,0.15);
+  border-color: rgba(167, 139, 250, 0.7);
+  color: #ffffff;
+  background: rgba(139, 92, 246, 0.22);
 }
 
 /* ──────────────────────────────────────────────
@@ -270,8 +275,8 @@ body {
 ────────────────────────────────────────────── */
 .mode-toggle {
   display: flex;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(124,58,237,0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(167, 139, 250, 0.3);
   border-radius: 14px;
   padding: 4px;
   gap: 2px;
@@ -285,9 +290,9 @@ body {
   border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
-  color: var(--text-muted);
+  color: #cbd5e1;
   background: transparent;
   transition: color 0.2s ease;
   position: relative;
@@ -296,7 +301,8 @@ body {
 }
 
 .mode-btn.active {
-  color: white;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 /* ──────────────────────────────────────────────
@@ -309,28 +315,31 @@ body {
 }
 
 .tone-btn {
-  padding: 8px 12px;
-  border: 1px solid rgba(124,58,237,0.2);
+  padding: 9px 12px;
+  border: 1px solid rgba(167, 139, 250, 0.25);
   border-radius: 10px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;
   font-family: inherit;
-  color: var(--text-muted);
-  background: rgba(255,255,255,0.03);
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
   text-align: center;
 }
 
 .tone-btn:hover {
-  border-color: rgba(124,58,237,0.5);
-  color: var(--text-secondary);
+  border-color: rgba(167, 139, 250, 0.65);
+  color: #ffffff;
+  background: rgba(139, 92, 246, 0.15);
 }
 
 .tone-btn.selected {
   border-color: var(--accent-violet);
-  background: rgba(124,58,237,0.15);
-  color: white;
-  box-shadow: 0 0 12px rgba(124,58,237,0.2);
+  background: rgba(139, 92, 246, 0.3);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
 }
 
 /* ──────────────────────────────────────────────
@@ -338,10 +347,10 @@ body {
 ────────────────────────────────────────────── */
 .label {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: #e2e8f0;
   margin-bottom: 8px;
   display: block;
 }
@@ -426,10 +435,11 @@ body {
    Character Count
 ────────────────────────────────────────────── */
 .char-count {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-muted);
+  font-weight: 500;
   text-align: right;
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 /* ──────────────────────────────────────────────

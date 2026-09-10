@@ -53,16 +53,17 @@ export default function HomePage() {
           style={{
             textAlign: "center",
             marginTop: "28px",
-            color: "var(--text-muted)",
-            fontSize: "12px",
+            color: "#cbd5e1",
+            fontSize: "13px",
             lineHeight: 1.7,
+            fontWeight: 400,
           }}
         >
           <p>
             EmailSender MCP — AI email composition with OpenRouter &amp; Nodemailer
           </p>
-          <p style={{ marginTop: "4px" }}>
-            Your SMTP credentials are never stored — they are used only for this session
+          <p style={{ marginTop: "4px", color: "#94a3b8" }}>
+            Your SMTP credentials are secure and handled exclusively by your server session
           </p>
         </motion.footer>
       </div>

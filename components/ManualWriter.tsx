@@ -84,7 +84,7 @@ export default function ManualWriter({ onChanged }: ManualWriterProps) {
               key={template.name}
               id={`template-${template.name.toLowerCase().replace(/\s+/g, "-")}`}
               className="btn-secondary"
-              style={{ fontSize: "12px", padding: "7px 14px" }}
+              style={{ fontSize: "13px", fontWeight: 600, padding: "8px 16px" }}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => update(template.subject, template.body)}
