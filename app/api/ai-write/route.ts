@@ -42,36 +42,56 @@ Requirements:
 - End with "[Your Name]" as signature placeholder
 - Subject should be engaging and relevant`;
 
-    const res = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://emailsendermcp.app",
-        "X-Title": "EmailSender MCP",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.0-flash-001",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    });
+    const modelsToTry = [
+      "google/gemini-2.5-flash",
+      "google/gemini-3.5-flash-lite",
+      "meta-llama/llama-3.3-70b-instruct:free",
+    ];
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      console.error("OpenRouter error:", errData);
-      return Response.json(
-        { error: errData?.error?.message || `OpenRouter API error: ${res.status}` },
-        { status: res.status }
-      );
+    let lastError = null;
+    let rawContent = "";
+
+    for (const model of modelsToTry) {
+      try {
+        const res = await fetch(`${OPENROUTER_BASE_URL}/chat/completions`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://emailsendermcp.app",
+            "X-Title": "EmailSender MCP",
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            temperature: 0.7,
+            max_tokens: 800,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          rawContent = data.choices?.[0]?.message?.content ?? "";
+          if (rawContent) break;
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          console.warn(`Model ${model} failed (${res.status}):`, errData);
+          lastError = errData?.error?.message || `Error ${res.status}`;
+        }
+      } catch (e: any) {
+        lastError = e?.message;
+      }
     }
 
-    const data = await res.json();
-    const rawContent = data.choices?.[0]?.message?.content ?? "";
+    if (!rawContent) {
+      return Response.json(
+        { error: lastError || "Failed to generate email with available AI models" },
+        { status: 500 }
+      );
+    }
 
     // Strip possible markdown fences
     const jsonStr = rawContent
