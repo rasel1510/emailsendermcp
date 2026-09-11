@@ -165,23 +165,6 @@ export default function AiWriter({ recipientEmail, isMultiple, onGenerated }: Ai
             transition={{ duration: 0.35, ease: "easeOut" }}
             style={{ display: "flex", flexDirection: "column", gap: "14px" }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "8px 12px",
-                background: "rgba(6,182,212,0.08)",
-                border: "1px solid rgba(6,182,212,0.2)",
-                borderRadius: "10px",
-              }}
-            >
-              <div className="pulse-dot" />
-              <span style={{ fontSize: "12px", color: "#22d3ee", fontWeight: 600 }}>
-                AI Generated — Review &amp; Edit Below
-              </span>
-            </div>
-
             {/* Subject */}
             <div>
               <label className="label" htmlFor="ai-subject">

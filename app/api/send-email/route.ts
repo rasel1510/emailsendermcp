@@ -13,7 +13,11 @@ interface SendEmailRequest {
 }
 
 function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (!email || typeof email !== "string") return false;
+  const trimmed = email.trim();
+  const rfcMatch = trimmed.match(/^[^<]+<([^>]+)>$/);
+  const actualEmail = rfcMatch ? rfcMatch[1].trim() : trimmed;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(actualEmail);
 }
 
 // Convert plain text body to minimal HTML

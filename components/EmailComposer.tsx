@@ -4,6 +4,7 @@ import { useState, useRef, KeyboardEvent, ClipboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AiWriter from "./AiWriter";
 import ManualWriter from "./ManualWriter";
+import AiRecipientFinder from "./AiRecipientFinder";
 
 type Mode = "ai" | "manual";
 type RecipientMode = "single" | "multiple";
@@ -43,7 +44,10 @@ const childVariants = {
 };
 
 function validateEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const trimmed = email.trim();
+  const rfcMatch = trimmed.match(/^[^<]+<([^>]+)>$/);
+  const actualEmail = rfcMatch ? rfcMatch[1].trim() : trimmed;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(actualEmail);
 }
 
 export default function EmailComposer() {
@@ -60,6 +64,7 @@ export default function EmailComposer() {
   const [multiEmailError, setMultiEmailError] = useState("");
   const [duplicateNotice, setDuplicateNotice] = useState("");
   const [isChipBoxFocused, setIsChipBoxFocused] = useState(false);
+  const [showAiFinder, setShowAiFinder] = useState(false);
   const chipInputRef = useRef<HTMLInputElement>(null);
 
   // Email content & status
@@ -152,6 +157,20 @@ export default function EmailComposer() {
   function clearAllRecipients() {
     setRecipients([]);
     setChipInput("");
+    setMultiEmailError("");
+  }
+
+  function addDiscoveredRecipients(newEmails: string[]) {
+    if (!newEmails || newEmails.length === 0) return;
+    setRecipients((prev) => {
+      const combined = [...prev];
+      for (const email of newEmails) {
+        if (!combined.includes(email)) {
+          combined.push(email);
+        }
+      }
+      return combined;
+    });
     setMultiEmailError("");
   }
 
@@ -442,11 +461,17 @@ export default function EmailComposer() {
 
             {/* Bottom status bar */}
             <div className="recipient-stats-bar">
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <span>👥 {recipients.length} account{recipients.length !== 1 ? "s" : ""}</span>
-                <span style={{ color: "#64748b" }}>•</span>
-                <span style={{ color: "#94a3b8" }}>Safe individualized delivery</span>
-              </span>
+                <button
+                  id="ai-find-emails-btn"
+                  type="button"
+                  className="ai-finder-trigger-btn"
+                  onClick={() => setShowAiFinder((prev) => !prev)}
+                >
+                  <span>✨</span> {showAiFinder ? "Close AI Finder" : "AI Find Company Emails"}
+                </button>
+              </div>
 
               {recipients.length > 0 && (
                 <button type="button" className="clear-recipients-btn" onClick={clearAllRecipients}>
@@ -454,6 +479,19 @@ export default function EmailComposer() {
                 </button>
               )}
             </div>
+
+            {/* AI Recipient Finder Drawer */}
+            <AnimatePresence>
+              {showAiFinder && (
+                <AiRecipientFinder
+                  onAddRecipients={(discovered) => {
+                    addDiscoveredRecipients(discovered);
+                    setShowAiFinder(false);
+                  }}
+                  onClose={() => setShowAiFinder(false)}
+                />
+              )}
+            </AnimatePresence>
 
             {/* Error or Duplicate notice */}
             <AnimatePresence>
@@ -478,31 +516,6 @@ export default function EmailComposer() {
                 </motion.p>
               )}
             </AnimatePresence>
-
-            {/* Personalization hint */}
-            <div
-              style={{
-                marginTop: "10px",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                background: "rgba(124, 58, 237, 0.12)",
-                border: "1px solid rgba(124, 58, 237, 0.25)",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                fontSize: "12px",
-                color: "#c4b5fd",
-                lineHeight: 1.4,
-              }}
-            >
-              <span>
-                ✨ <strong>Auto-Personalization:</strong> Each recipient will be addressed by their own individual name. You can also use{" "}
-                <code style={{ background: "rgba(255,255,255,0.12)", padding: "1px 5px", borderRadius: "4px", color: "#38bdf8" }}>
-                  {"{{name}}"}
-                </code>{" "}
-                in the body or subject.
-              </span>
-            </div>
           </div>
         )}
       </motion.div>
