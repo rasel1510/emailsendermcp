@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import EmailComposer from "@/components/EmailComposer";
 
@@ -50,28 +49,6 @@ export default function HomePage() {
       <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: "680px" }}>
         {/* Main Composer Card */}
         <EmailComposer />
-
-        {/* Footer */}
-        <motion.footer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          style={{
-            textAlign: "center",
-            marginTop: "28px",
-            color: "#cbd5e1",
-            fontSize: "13px",
-            lineHeight: 1.7,
-            fontWeight: 400,
-          }}
-        >
-          <p>
-            EmailSender MCP — AI email composition with OpenRouter &amp; Nodemailer
-          </p>
-          <p style={{ marginTop: "4px", color: "#94a3b8" }}>
-            Your SMTP credentials are secure and handled exclusively by your server session
-          </p>
-        </motion.footer>
       </div>
     </main>
   );

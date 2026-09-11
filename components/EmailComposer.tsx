@@ -139,9 +139,7 @@ export default function EmailComposer() {
         <h1 className="gradient-text" style={{ fontSize: "28px", fontWeight: 800, lineHeight: 1.2 }}>
           EmailSender MCP
         </h1>
-        <p style={{ color: "#e2e8f0", fontSize: "14px", marginTop: "8px", fontWeight: 400 }}>
-          AI-powered email composer — craft and send professional emails instantly
-        </p>
+
       </motion.div>
 
       {/* Recipient */}
@@ -309,15 +307,15 @@ export default function EmailComposer() {
               gap: "10px",
               ...(sendStatus === "success"
                 ? {
-                    background: "rgba(16,185,129,0.1)",
-                    border: "1px solid rgba(16,185,129,0.3)",
-                    color: "#34d399",
-                  }
+                  background: "rgba(16,185,129,0.1)",
+                  border: "1px solid rgba(16,185,129,0.3)",
+                  color: "#34d399",
+                }
                 : {
-                    background: "rgba(239,68,68,0.1)",
-                    border: "1px solid rgba(239,68,68,0.3)",
-                    color: "#f87171",
-                  }),
+                  background: "rgba(239,68,68,0.1)",
+                  border: "1px solid rgba(239,68,68,0.3)",
+                  color: "#f87171",
+                }),
             }}
           >
             {sendStatus === "success" ? (
