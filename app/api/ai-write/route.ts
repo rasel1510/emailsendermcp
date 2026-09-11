@@ -7,12 +7,13 @@ interface AiWriteRequest {
   purpose: string;
   tone?: string;
   recipient?: string;
+  isMultiple?: boolean;
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as AiWriteRequest;
-    const { purpose, tone = "professional", recipient } = body;
+    const { purpose, tone = "professional", recipient, isMultiple } = body;
 
     if (!purpose?.trim()) {
       return Response.json({ error: "Purpose is required" }, { status: 400 });
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
     if (!OPENROUTER_API_KEY) {
       return Response.json({ error: "OpenRouter API key not configured" }, { status: 500 });
     }
+
+    const isMulti = Boolean(isMultiple || (recipient && (recipient.toLowerCase().includes("recipient") || recipient.includes(","))));
 
     const systemPrompt = `You are an expert email copywriter. Generate professional, high-quality emails based on the user's requirements.
 Always respond with a valid JSON object in this exact format:
@@ -33,12 +36,17 @@ Do NOT wrap in markdown code blocks. Return raw JSON only.`;
     const userPrompt = `Write a ${tone} email with the following purpose:
 ${purpose}
 
-${recipient ? `Recipient email: ${recipient}` : ""}
+${recipient ? `Context: ${recipient}` : ""}
 
 Requirements:
 - Tone: ${tone}
 - Keep it concise but complete
-- Include a proper greeting, body paragraphs, and closing
+${
+  isMulti
+    ? `- Greeting Requirement: This email is for MULTIPLE recipients individually. Do NOT list all names or emails together in the greeting! Always use the placeholder 'Hi {{name}},' or 'Dear {{name}},' at the beginning so each recipient's name is dynamically inserted individually.`
+    : `- Greeting Requirement: Include a proper greeting, e.g. 'Hi {{name}},' or 'Dear {{name}},'`
+}
+- Include clear body paragraphs and a professional closing
 - End with "[Your Name]" as signature placeholder
 - Subject should be engaging and relevant`;
 

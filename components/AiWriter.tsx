@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface AiWriterProps {
   recipientEmail: string;
+  isMultiple?: boolean;
   onGenerated: (subject: string, body: string) => void;
 }
 
-export default function AiWriter({ recipientEmail, onGenerated }: AiWriterProps) {
+export default function AiWriter({ recipientEmail, isMultiple, onGenerated }: AiWriterProps) {
   const [purpose, setPurpose] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -36,7 +37,11 @@ export default function AiWriter({ recipientEmail, onGenerated }: AiWriterProps)
       const res = await fetch("/api/ai-write", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ purpose, recipient: recipientEmail }),
+        body: JSON.stringify({
+          purpose,
+          recipient: recipientEmail,
+          isMultiple: Boolean(isMultiple),
+        }),
       });
 
       const data = await res.json();
